@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSupabase } from '@/lib/supabase/server';
+import { getAdminSupabase } from '@/lib/supabase/server';
 import { auth } from '@/lib/auth';
 import { generateAccountNumber, generateRoutingNumber } from '@/lib/utils';
 import { emailService } from '@/lib/email';
@@ -11,8 +11,8 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const supabase = getServerSupabase();
-    const { data: accounts, error } = await supabase
+    const supabaseAdmin = getAdminSupabase();
+    const { data: accounts, error } = await supabaseAdmin
       .from('accounts')
       .select('*, user:users(first_name, last_name, email)')
       .order('created_at', { ascending: false });
@@ -43,10 +43,10 @@ export async function POST(request: Request) {
     const accountNumber = generateAccountNumber();
     const routingNumber = generateRoutingNumber();
 
-    const supabase = getServerSupabase();
+    const supabaseAdmin = getAdminSupabase();
 
     // Create account
-    const { data: account, error: accountError } = await supabase
+    const { data: account, error: accountError } = await supabaseAdmin
       .from('accounts')
       .insert({
         user_id,

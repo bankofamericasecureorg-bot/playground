@@ -2,10 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Header from '@/app/components/Header';
-import Footer from '@/app/components/Footer';
 import Button from '@/app/components/ui/Button';
-import Input from '@/app/components/ui/Input';
 import Link from 'next/link';
 
 export default function AdminLoginPage() {
@@ -30,7 +27,6 @@ export default function AdminLoginPage() {
       const result = await response.json();
 
       if (result.success) {
-        // Redirect to admin dashboard
         router.push('/admin/dashboard');
       } else {
         setError(result.error || 'Invalid credentials');
@@ -43,145 +39,124 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-bofa-navy">
-      {/* Admin Landing Header (Simplified) */}
-      <div className="bg-bofa-navy-dark border-b border-white/10 shadow-lg">
-        <div className="container py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-sm overflow-hidden flex flex-col shadow-inner">
-              <div className="h-1/3 bg-bofa-red"></div>
-              <div className="h-1/3 bg-white border-y border-bofa-gray-200"></div>
-              <div className="h-1/3 bg-bofa-navy"></div>
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-white group-hover:text-bofa-red-light transition-colors">
-                Bank of America
-              </h1>
-              <p className="text-xs text-white/50 font-medium uppercase tracking-widest">
-                Admin Portal
-              </p>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-[#f8f9fa] to-[#e9ecef]">
+      {/* Clean Header Bar */}
+      <header className="bg-white border-b border-[#e0e0e0] shadow-sm">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center">
+            <img 
+              src="/header.png" 
+              alt="Bank of America" 
+              className="h-6"
+            />
           </Link>
           <Link 
             href="/user/login" 
-            className="text-sm font-semibold text-white/70 hover:text-white transition-all flex items-center gap-2"
+            className="text-[13px] text-[#0066b2] hover:text-[#004d8c] transition-colors flex items-center gap-1.5 font-medium"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            Back to Online Banking
+            Customer Sign In
           </Link>
         </div>
-      </div>
+      </header>
       
-      <main className="flex-1 flex items-center justify-center py-20 px-4">
-        <div className="w-full max-w-md animate-fadeIn">
-          {/* Main Card */}
-          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all">
-            {/* Header / Accent */}
-            <div className="h-2 bg-gradient-to-r from-bofa-red via-bofa-navy to-bofa-red"></div>
+      <main className="flex items-center justify-center py-16 px-4">
+        <div className="w-full max-w-md">
+          {/* Login Card */}
+          <div className="bg-white rounded-xl shadow-lg border border-[#e0e0e0] overflow-hidden">
+            {/* Card Header */}
+            <div className="bg-[#012169] px-8 py-6 text-center">
+              <h1 className="text-[20px] text-white font-normal tracking-wide">
+                Administrative Portal
+              </h1>
+              <p className="text-[12px] text-white/60 mt-1">
+                Secure access for authorized personnel
+              </p>
+            </div>
             
-            <div className="px-8 pt-10 pb-12">
-              <div className="text-center mb-10">
-                <h2 className="text-3xl font-bold text-bofa-navy mb-2">Admin Sign In</h2>
-                <p className="text-bofa-gray-600 font-medium">
-                  Enter your administrative credentials.
-                </p>
-              </div>
-
-              <form onSubmit={handleLogin} className="space-y-6">
+            <div className="px-8 py-8">
+              <form onSubmit={handleLogin} className="space-y-5">
                 {error && (
-                  <div className="flex items-center gap-3 p-4 bg-bofa-red/5 border border-bofa-red/20 rounded-xl animate-shake">
-                    <svg className="w-6 h-6 text-bofa-red flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="flex items-center gap-3 p-3 bg-[#fef2f2] border border-[#fecaca] rounded-lg">
+                    <svg className="w-5 h-5 text-[#dc2626] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
-                    <p className="text-sm font-semibold text-bofa-red">{error}</p>
+                    <p className="text-[13px] text-[#dc2626]">{error}</p>
                   </div>
                 )}
 
-                <Input
-                  label="Administrative Email"
-                  type="email"
-                  placeholder="admin@bankofamerica.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  leftIcon={
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206" />
-                    </svg>
-                  }
-                  className="bg-bofa-gray-50 border-bofa-gray-200 focus:bg-white"
-                />
+                <div className="space-y-1.5">
+                  <label className="block text-[13px] text-[#333] font-medium">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="admin@bankofamerica.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 border border-[#d1d5db] rounded-lg text-[14px] placeholder:text-[#9ca3af] focus:border-[#012169] focus:outline-none focus:ring-2 focus:ring-[#012169]/20 transition-all"
+                  />
+                </div>
 
-                <Input
-                  label="Secure Password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  showPasswordToggle
-                  leftIcon={
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                  }
-                  className="bg-bofa-gray-50 border-bofa-gray-200 focus:bg-white"
-                />
+                <div className="space-y-1.5">
+                  <label className="block text-[13px] text-[#333] font-medium">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 border border-[#d1d5db] rounded-lg text-[14px] placeholder:text-[#9ca3af] focus:border-[#012169] focus:outline-none focus:ring-2 focus:ring-[#012169]/20 transition-all"
+                  />
+                </div>
 
-                <div className="flex items-center justify-between pt-2">
-                  <label className="flex items-center gap-2 cursor-pointer group">
+                <div className="flex items-center justify-between pt-1">
+                  <label className="flex items-center gap-2 cursor-pointer">
                     <input 
                       type="checkbox" 
-                      className="w-5 h-5 rounded-md border-bofa-gray-300 text-bofa-navy focus:ring-bofa-navy transition-all" 
+                      className="w-4 h-4 rounded border-[#d1d5db] text-[#012169] focus:ring-[#012169]" 
                     />
-                    <span className="text-sm text-bofa-gray-600 group-hover:text-bofa-navy transition-colors">
-                      Remember this workstation
-                    </span>
+                    <span className="text-[13px] text-[#666]">Remember me</span>
                   </label>
+                  <Link href="#" className="text-[13px] text-[#0066b2] hover:underline">
+                    Forgot password?
+                  </Link>
                 </div>
 
                 <Button
                   type="submit"
                   variant="primary"
-                  className="w-full py-4 text-lg shadow-lg hover:shadow-xl transform transition-all active:scale-[0.98]"
+                  className="w-full py-3 text-[14px] font-medium bg-[#012169] hover:bg-[#001845] mt-2"
                   isLoading={isLoading}
                 >
-                  Authorize Sign In
+                  Sign In
                 </Button>
               </form>
-
-              <div className="mt-10 p-5 bg-bofa-navy/5 border border-bofa-navy/10 rounded-2xl">
-                <div className="flex items-start gap-4">
-                  <div className="p-2 bg-bofa-navy text-white rounded-lg shadow-md">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-bofa-navy uppercase tracking-wider">
-                      Security Protocol
-                    </h4>
-                    <p className="text-xs text-bofa-gray-600 leading-relaxed mt-1 font-medium">
-                      Unauthorized access attempts are strictly monitored and logged. Use of this portal constitutes agreement to all corporate security policies.
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
             
-            {/* Minimal Sub-Footer */}
-            <div className="px-8 py-5 bg-bofa-gray-50 border-t border-bofa-gray-100 text-center">
-              <p className="text-[10px] text-bofa-gray-400 font-bold uppercase tracking-[0.2em]">
-                Bank of America Security Architecture v4.2.0
-              </p>
+            {/* Security Footer */}
+            <div className="px-8 py-4 bg-[#f9fafb] border-t border-[#e5e7eb]">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-[#012169]/10 rounded-lg">
+                  <svg className="w-4 h-4 text-[#012169]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <p className="text-[11px] text-[#666] leading-relaxed">
+                  This system is for authorized use only. All access attempts are logged and monitored.
+                </p>
+              </div>
             </div>
           </div>
           
-          <div className="mt-8 text-center text-white/40 text-xs">
-            © 2024 Bank of America Corporation. For authorized internal use only.
-          </div>
+          <p className="mt-8 text-center text-[11px] text-[#999]">
+            © 2024 Bank of America Corporation. All rights reserved.
+          </p>
         </div>
       </main>
     </div>

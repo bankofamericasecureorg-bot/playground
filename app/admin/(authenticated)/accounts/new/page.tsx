@@ -101,17 +101,17 @@ export default function LinkAccountPage() {
           </svg>
           Back to Ledger
         </button>
-        <h2 className="text-3xl font-bold text-bofa-navy">Link New Product</h2>
-        <p className="text-bofa-gray-500 font-medium tracking-tight">Allocate a new financial account to an existing customer profile.</p>
+        <div className="text-sm font-normal text-[#333]">Link New Product</div>
+        <p className="text-sm font-normal text-[#333]">Allocate a new financial account to an existing customer profile.</p>
       </div>
 
       <form onSubmit={handleSubmit}>
         <Card variant="elevated">
           <CardHeader>
-            <h3 className="font-bold text-bofa-navy uppercase tracking-wider text-sm flex items-center gap-2">
+            <div className="text-sm font-normal text-[#333] flex items-center gap-2">
               <div className="w-2 h-2 bg-bofa-red rounded-full"></div>
               Account Provisioning
-            </h3>
+            </div>
           </CardHeader>
           <CardBody className="space-y-8 pt-10 pb-12">
             {error && (

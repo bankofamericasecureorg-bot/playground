@@ -124,5 +124,22 @@ export const emailService = {
         <p>Log in to view your full transaction history.</p>
       `
     });
+  },
+
+  /**
+   * Notification for Withdrawal Status Change
+   */
+  async sendWithdrawalStatusEmail(to: string, amount: string, status: 'approved' | 'rejected', notes?: string) {
+    const statusColor = status === 'approved' ? '#2E7D32' : '#C62828';
+    return this.sendEmail({
+      to,
+      subject: `Withdrawal Request ${status.charAt(0).toUpperCase() + status.slice(1)}`,
+      html: `
+        <h2 style="color: #012169; margin-top: 0;">Withdrawal Request Update</h2>
+        <p>Your withdrawal request for <strong>${amount}</strong> has been <strong><span style="color: ${statusColor}; text-transform: uppercase;">${status}</span></strong>.</p>
+        ${notes ? `<p><strong>Admin Notes:</strong> ${notes}</p>` : ''}
+        <p>You can view the details of this transaction in your online banking dashboard.</p>
+      `
+    });
   }
 };

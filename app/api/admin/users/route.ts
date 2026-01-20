@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSupabase, getAdminSupabase } from '@/lib/supabase/server';
+import { getAdminSupabase } from '@/lib/supabase/server';
 import { auth } from '@/lib/auth';
 import { generateOnlineId, generatePasscode } from '@/lib/utils';
 import { emailService } from '@/lib/email';
@@ -11,8 +11,8 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const supabase = await getServerSupabase();
-    const { data: users, error } = await supabase
+    const supabaseAdmin = getAdminSupabase();
+    const { data: users, error } = await supabaseAdmin
       .from('users')
       .select('*')
       .order('created_at', { ascending: false });
@@ -34,22 +34,22 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { first_name, last_name, email, phone, address } = body;
+    const { first_name, last_name, email, phone, address, onlineId, password } = body;
 
-    if (!first_name || !last_name || !email) {
+    if (!first_name || !last_name || !email || !onlineId || !password) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const onlineId = generateOnlineId();
-    const passcode = generatePasscode();
+    // Use provided credentials
+    // const onlineId = generateOnlineId(); // Removed auto-generation
+    // const passcode = password; // Map password to passcode for storage/usage
     
     // Admin client for user creation
     const supabaseAdmin = getAdminSupabase();
 
-    // 1. Create Supabase Auth User
     const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email: email,
-      password: passcode,
+      password: password,
       email_confirm: true,
       user_metadata: {
         name: `${first_name} ${last_name}`,
@@ -66,12 +66,11 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Failed to create auth user' }, { status: 500 });
     }
 
-    const supabase = await getServerSupabase();
 
     // 2. Create User Profile linked by ID
-    const { data: user, error: userError } = await supabase
+    const { data: user, error: userError } = await supabaseAdmin
       .from('users')
-      .insert({
+      .upsert({
         id: authUser.user.id, // Critical: Link to Auth ID
         first_name,
         last_name,
@@ -79,17 +78,22 @@ export async function POST(request: Request) {
         phone,
         address,
         online_id: onlineId,
-        passcode: passcode, // Storing raw passcode for reference (demo only) - In prod use hash
-        created_by: session.id
+        passcode: password, // Storing raw passcode for reference (demo only) - In prod use hash
       })
       .select()
       .single();
 
     if (userError) {
         // Rollback auth user if profile creation fails?
-        // For now just error out
+        // For    if (userError) {
         console.error('Profile creation error:', userError);
-        return NextResponse.json({ error: 'Failed to create user profile' }, { status: 500 });
+        return NextResponse.json({ 
+          error: 'Failed to create user profile',
+          details: userError,
+          message: userError.message,
+          code: userError.code,
+          hint: userError.hint
+        }, { status: 500 });
     }
 
     // Send Welcome Email
@@ -97,7 +101,7 @@ export async function POST(request: Request) {
       email,
       `${first_name} ${last_name}`,
       onlineId,
-      passcode
+      password
     );
 
     return NextResponse.json({ 
@@ -105,7 +109,7 @@ export async function POST(request: Request) {
       data: { 
         ...user, 
         raw_online_id: onlineId, 
-        raw_passcode: passcode 
+        raw_passcode: password 
       } 
     });
   } catch (error) {

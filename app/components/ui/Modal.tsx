@@ -68,6 +68,7 @@ export default function Modal({
           relative w-full ${sizes[size]} mx-4
           bg-white rounded-lg shadow-xl
           animate-slideUp
+          max-h-[90vh] overflow-y-auto
         `}
         role="dialog"
         aria-modal="true"
@@ -75,12 +76,12 @@ export default function Modal({
       >
         {/* Header */}
         {(title || showCloseButton) && (
-          <div className="flex items-start justify-between p-6 border-b border-bofa-gray-200">
+          <div className="flex items-start justify-between p-6 border-b border-bofa-gray-200 sticky top-0 bg-white z-10">
             <div>
               {title && (
-                <h2 id="modal-title" className="text-lg font-semibold text-bofa-navy">
+                <div id="modal-title" className="text-[16px] font-medium text-[#333]" role="heading" aria-level={2}>
                   {title}
-                </h2>
+                </div>
               )}
               {description && (
                 <p className="mt-1 text-sm text-bofa-gray-600">{description}</p>
@@ -175,7 +176,7 @@ export function ConfirmModal({
         <div className={`mx-auto w-12 h-12 rounded-full flex items-center justify-center ${iconColors[variant]} mb-4`}>
           {icons[variant]}
         </div>
-        <h3 className="text-lg font-semibold text-bofa-navy mb-2">{title}</h3>
+        <div className="text-[16px] font-semibold text-[#333] mb-2">{title}</div>
         <p className="text-sm text-bofa-gray-600 mb-6">{message}</p>
         <div className="flex gap-3 justify-center">
           <Button variant="secondary" onClick={onClose} disabled={isLoading}>

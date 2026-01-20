@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSupabase } from '@/lib/supabase/server';
+import { getAdminSupabase } from '@/lib/supabase/server';
 import { auth } from '@/lib/auth';
 
 export async function GET() {
@@ -9,8 +9,8 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const supabase = getServerSupabase();
-    const { data: transactions, error } = await supabase
+    const supabaseAdmin = getAdminSupabase();
+    const { data: transactions, error } = await supabaseAdmin
       .from('transactions')
       .select('*, account:accounts(account_number, user:users(first_name, last_name, email))')
       .order('date', { ascending: false });

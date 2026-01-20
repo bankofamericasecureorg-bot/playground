@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSupabase } from '@/lib/supabase/server';
+import { getAdminSupabase } from '@/lib/supabase/server';
 import { auth } from '@/lib/auth';
 import { generateCardNumber, generateExpiryDate } from '@/lib/utils';
 
@@ -10,8 +10,8 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const supabase = getServerSupabase();
-    const { data: cards, error } = await supabase
+    const supabaseAdmin = getAdminSupabase();
+    const { data: cards, error } = await supabaseAdmin
       .from('credit_cards')
       .select('*, user:users(first_name, last_name, email)')
       .order('created_at', { ascending: false });
@@ -39,12 +39,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const cardNumber = generateCardNumber();
+    const cardNumber = generateCardNumber(card_type);
     const expiryDate = generateExpiryDate();
 
-    const supabase = getServerSupabase();
+    const supabaseAdmin = getAdminSupabase();
 
-    const { data: card, error: cardError } = await supabase
+    const { data: card, error: cardError } = await supabaseAdmin
       .from('credit_cards')
       .insert({
         user_id,

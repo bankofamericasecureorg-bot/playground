@@ -18,7 +18,9 @@ export default function CreateUserPage() {
     last_name: '',
     email: '',
     phone: '',
-    address: ''
+    address: '',
+    onlineId: '',
+    password: ''
   });
 
   // Success State
@@ -52,7 +54,9 @@ export default function CreateUserPage() {
           last_name: '',
           email: '',
           phone: '',
-          address: ''
+          address: '',
+          onlineId: '',
+          password: ''
         });
       } else {
         setError(result.error || 'Failed to create user');
@@ -76,17 +80,17 @@ export default function CreateUserPage() {
           </svg>
           Back to User List
         </button>
-        <h2 className="text-3xl font-bold text-bofa-navy">Onboard New Customer</h2>
-        <p className="text-bofa-gray-500 font-medium">Create a new banking profile. Credentials will be generated automatically.</p>
+        <div className="text-sm font-normal text-[#333]">Onboard New Customer</div>
+        <p className="text-sm font-normal text-[#333]">Create a new banking profile. Credentials will be generated automatically.</p>
       </div>
 
       <form onSubmit={handleSubmit}>
         <Card variant="elevated">
           <CardHeader>
-            <h3 className="font-bold text-bofa-navy uppercase tracking-wider text-sm flex items-center gap-2">
+            <div className="text-sm font-normal text-[#333] flex items-center gap-2">
               <div className="w-2 h-2 bg-bofa-red rounded-full"></div>
               Personal Information
-            </h3>
+            </div>
           </CardHeader>
           <CardBody className="space-y-6 pt-8 pb-10">
             {error && (
@@ -165,6 +169,37 @@ export default function CreateUserPage() {
                 className="bg-bofa-gray-50"
               />
             </div>
+
+            <div className="pt-6 border-t border-bofa-gray-200">
+              <div className="text-sm font-normal text-[#333] mb-6 flex items-center gap-2">
+                <div className="w-2 h-2 bg-bofa-blue rounded-full"></div>
+                Account Credentials
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Input
+                  id="onlineId"
+                  label="Online ID (User ID)"
+                  placeholder="john.doe123"
+                  value={formData.onlineId}
+                  onChange={handleChange}
+                  required
+                  helperText="The unique ID the user will use to log in."
+                  className="bg-bofa-gray-50 font-medium"
+                />
+                <Input
+                  id="password"
+                  label="Initial Password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  helperText="User must change this upon first login."
+                  className="bg-bofa-gray-50"
+                  showPasswordToggle
+                />
+              </div>
+            </div>
           </CardBody>
           <CardFooter className="bg-bofa-gray-50/50 justify-end flex">
             <Button 
@@ -202,13 +237,13 @@ export default function CreateUserPage() {
 
             <div className="space-y-4">
               <div>
-                <p className="text-xs font-bold text-green-700 uppercase mb-1">Generated Online ID</p>
+                <p className="text-xs font-bold text-green-700 uppercase mb-1">Assigned Online ID</p>
                 <div className="p-3 bg-white border border-green-200 rounded-xl font-mono text-xl font-black text-bofa-navy tracking-widest text-center shadow-inner">
                   {createdUser?.raw_online_id}
                 </div>
               </div>
               <div>
-                <p className="text-xs font-bold text-green-700 uppercase mb-1">Confidential Passcode</p>
+                <p className="text-xs font-bold text-green-700 uppercase mb-1">Assigned Password</p>
                 <div className="p-3 bg-white border border-green-200 rounded-xl font-mono text-xl font-black text-bofa-red tracking-widest text-center shadow-inner">
                   {createdUser?.raw_passcode}
                 </div>

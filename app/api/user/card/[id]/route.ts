@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSupabase } from '@/lib/supabase/server';
+import { getAdminSupabase } from '@/lib/supabase/server';
 import { auth } from '@/lib/auth';
 
 export async function GET(
@@ -13,10 +13,10 @@ export async function GET(
     }
 
     const { id } = await params;
-    const supabase = getServerSupabase();
+    const supabaseAdmin = getAdminSupabase();
 
-    // Fetch card details
-    const { data: card, error: cardError } = await supabase
+    // Fetch card details - must belong to this user
+    const { data: card, error: cardError } = await supabaseAdmin
       .from('credit_cards')
       .select('*')
       .eq('id', id)
@@ -27,13 +27,13 @@ export async function GET(
       return NextResponse.json({ error: 'Card not found' }, { status: 404 });
     }
 
-    // Fetch transactions for this card (assuming card_id exists in transactions)
-    // If not, we'll return an empty list for now to avoid crashes
-    const { data: transactions, error: txsError } = await supabase
+    // Fetch transactions for this card if card_id exists in transactions
+    const { data: transactions } = await supabaseAdmin
       .from('transactions')
       .select('*')
       .eq('card_id', id)
-      .order('date', { ascending: false });
+      .order('date', { ascending: false })
+      .limit(50);
 
     return NextResponse.json({
       success: true,
@@ -60,9 +60,9 @@ export async function PATCH(
 
     const { id } = await params;
     const { is_locked } = await request.json();
-    const supabase = getServerSupabase();
+    const supabaseAdmin = getAdminSupabase();
 
-    const { data: card, error } = await supabase
+    const { data: card, error } = await supabaseAdmin
       .from('credit_cards')
       .update({ is_locked })
       .eq('id', id)

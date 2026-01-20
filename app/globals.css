@@ -10,14 +10,18 @@
   --bofa-navy: #012169;
   --bofa-navy-dark: #001a4d;
   --bofa-navy-light: #1a3a7a;
-  --bofa-red: #E31837;
-  --bofa-red-dark: #c41230;
-  --bofa-red-light: #ff2d4a;
+  --bofa-red: #c41230;
+  --bofa-red-dark: #a30f28;
+  --bofa-red-light: #dc1431;
   
   /* ===== SECONDARY COLORS ===== */
-  --bofa-blue: #0065B3;
-  --bofa-blue-light: #0077cc;
-  --bofa-blue-dark: #004d8c;
+  --bofa-blue: #0066b2;
+  --bofa-blue-light: #0073cc;
+  --bofa-blue-dark: #005599;
+  
+  /* ===== SPECIAL BACKGROUNDS ===== */
+  --bofa-footer-bg: #f5f0eb;
+  --bofa-fdic-bg: #f5f5f5;
   
   /* ===== NEUTRAL COLORS (Refined for warmth/professionalism) ===== */
   --bofa-white: #FFFFFF;

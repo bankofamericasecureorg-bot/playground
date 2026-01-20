@@ -30,17 +30,17 @@ export default function AdminSettingsPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-8 animate-fadeIn">
       <div className="mb-8">
-        <h2 className="text-3xl font-bold text-bofa-navy">System Settings</h2>
-        <p className="text-bofa-gray-500 font-medium">Configure administrative permissions and security protocols.</p>
+        <div className="text-sm font-normal text-[#333]">System Settings</div>
+        <p className="text-sm font-normal text-[#333]">Configure administrative permissions and security protocols.</p>
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">
         <Card variant="elevated">
           <CardHeader>
-            <h3 className="font-bold text-bofa-navy uppercase tracking-wider text-sm flex items-center gap-2">
+            <div className="text-sm font-normal text-[#333] flex items-center gap-2">
               <div className="w-2 h-2 bg-bofa-navy rounded-full"></div>
               Administrator Profile
-            </h3>
+            </div>
           </CardHeader>
           <CardBody className="space-y-6 pt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -62,10 +62,10 @@ export default function AdminSettingsPage() {
 
         <Card variant="default">
           <CardHeader>
-            <h3 className="font-bold text-bofa-navy uppercase tracking-wider text-sm flex items-center gap-2">
+            <div className="text-sm font-normal text-[#333] flex items-center gap-2">
               <div className="w-2 h-2 bg-bofa-red rounded-full"></div>
               Security Credentials
-            </h3>
+            </div>
           </CardHeader>
           <CardBody className="space-y-6 pt-6">
             <Input

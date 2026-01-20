@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
-import Sidebar from '@/app/components/Sidebar';
-import Header from '@/app/components/Header';
+import DashboardHeader from '@/app/components/DashboardHeader';
 import EricaChat from '@/app/components/EricaChat';
+import Footer from '@/app/components/Footer';
 
 export default async function UserDashboardLayout({
   children,
@@ -17,25 +17,22 @@ export default async function UserDashboardLayout({
   }
 
   return (
-    <div className="flex h-screen bg-bofa-gray-50 overflow-hidden">
-      {/* Sidebar - Desktop */}
-      <div className="hidden md:flex flex-shrink-0">
-        <Sidebar variant="user" />
-      </div>
+    <div className="min-h-screen flex flex-col bg-[#f5f5f5]">
+      {/* New BoA-style Header with horizontal navigation */}
+      <DashboardHeader userName={session.name} />
 
-      {/* Main Content Area */}
-      <div className="flex flex-col flex-1 w-0 overflow-hidden relative">
-        <Header variant="authenticated" />
-        
-        {/* Scrollable Content */}
-        <main className="flex-1 relative overflow-y-auto focus:outline-none p-4 sm:p-6 lg:p-8">
-          <div className="max-w-6xl mx-auto pb-20">
-            {children}
-          </div>
-        </main>
+      {/* Main Content Area - Full width, no sidebar */}
+      <main className="flex-1">
+        <div className="max-w-[1200px] mx-auto px-4 py-6">
+          {children}
+        </div>
+      </main>
 
-        <EricaChat />
-      </div>
+      {/* Floating Erica Chat */}
+      <EricaChat />
+
+      {/* Global Footer */}
+      <Footer />
     </div>
   );
 }

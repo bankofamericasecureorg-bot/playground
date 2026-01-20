@@ -1,15 +1,40 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardHeader, CardBody, AccountCard } from '@/app/components/ui/Card';
-import Button from '@/app/components/ui/Button';
-import Table, { Badge } from '@/app/components/ui/Table';
 import Link from 'next/link';
 
+interface Account {
+  id: string;
+  account_type: string;
+  account_number: string;
+  balance: number;
+  available_balance?: number;
+}
+
+interface Card {
+  id: string;
+  card_number: string;
+  current_balance: number;
+  credit_limit: number;
+  rewards_points: number;
+}
+
+interface Transaction {
+  id: string;
+  description: string;
+  amount: number;
+  type: 'credit' | 'debit';
+  date: string;
+  account: {
+    account_type: string;
+    account_number: string;
+  };
+}
+
 interface DashboardData {
-  accounts: any[];
-  cards: any[];
-  recentTransactions: any[];
+  accounts: Account[];
+  cards: Card[];
+  recentTransactions: Transaction[];
   summary: {
     totalBalance: number;
     accountCount: number;
@@ -20,14 +45,19 @@ interface DashboardData {
 export default function UserDashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [expandedAccount, setExpandedAccount] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/user/dashboard');
+        const response = await fetch('/api/user/dashboard', {
+          cache: 'no-store'
+        });
         const result = await response.json();
         if (result.success) {
           setData(result.data);
+        } else {
+          console.error('Fetch failed:', result.error);
         }
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
@@ -45,190 +75,222 @@ export default function UserDashboardPage() {
     }).format(amount);
   };
 
+  const formatAccountNumber = (num: string) => `•••• ${num.slice(-4)}`;
+
   if (isLoading) {
     return (
-      <div className="space-y-8 animate-fadeIn">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-48 bg-bofa-gray-100 animate-pulse rounded-2xl shadow-sm"></div>
-          ))}
-        </div>
-        <div className="h-96 bg-bofa-gray-100 animate-pulse rounded-2xl shadow-sm"></div>
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-20 bg-white animate-pulse rounded border border-[#ddd]"></div>
+        ))}
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 animate-fadeIn">
-      {/* Welcome & Global Balance */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 bg-white p-8 rounded-2xl border border-bofa-gray-100 shadow-sm overflow-hidden relative group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-bofa-blue/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-bofa-blue/10 transition-colors duration-700"></div>
-        <div className="relative z-10">
-          <h2 className="text-sm font-bold text-bofa-gray-400 uppercase tracking-widest mb-1">Total Relationship Balance</h2>
-          <p className="text-4xl font-black text-bofa-navy font-mono tracking-tighter">
-            {formatCurrency(data?.summary.totalBalance || 0)}
-          </p>
-          <div className="flex items-center gap-2 mt-4">
-            <Badge variant="info">{data?.summary.accountCount} Accounts</Badge>
-            <Badge variant="success">{data?.summary.cardCount} Cards</Badge>
-          </div>
-        </div>
-        <div className="flex gap-3 relative z-10">
-          <Link href="/dashboard/transfers">
-            <Button variant="primary" className="px-8 shadow-lg hover:shadow-xl transition-all">Move Money</Button>
-          </Link>
-          <Link href="/dashboard/statements">
-            <Button variant="secondary" className="px-8">Statements</Button>
-          </Link>
-        </div>
+    <div className="space-y-6">
+      {/* Quick Actions Bar */}
+      <div className="flex flex-wrap gap-3">
+        <Link 
+          href="/dashboard/transfers" 
+          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-[#ddd] rounded text-[14px] text-[#0066b2] hover:bg-[#f5f5f5] transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+          </svg>
+          Transfer
+        </Link>
+        <Link 
+          href="/dashboard/withdraw" 
+          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-[#ddd] rounded text-[14px] text-[#0066b2] hover:bg-[#f5f5f5] transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          Withdraw
+        </Link>
       </div>
 
-      {/* Account Cards Grid */}
-      <div>
-        <h3 className="text-xl font-bold text-bofa-navy mb-6 flex items-center gap-2">
-          <div className="w-1.5 h-6 bg-bofa-red rounded-full"></div>
-          Your Accounts
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data?.accounts.map((acc: any) => (
-            <Link key={acc.id} href={`/dashboard/account/${acc.id}`}>
-              <AccountCard
-                type={acc.account_type as 'checking' | 'savings'}
-                accountNumber={`•••• ${acc.account_number.slice(-4)}`}
-                balance={acc.balance}
-                className="transform transition-transform hover:scale-[1.03] active:scale-[0.98]"
-              />
-            </Link>
-          ))}
-          {data?.cards.map((card: any) => (
-            <Link key={card.id} href={`/dashboard/card/${card.id}`}>
-              <AccountCard
-                type="credit"
-                accountNumber={`•••• ${card.card_number.slice(-4)}`}
-                balance={card.current_balance}
-                limit={card.credit_limit}
-                className="transform transition-transform hover:scale-[1.03] active:scale-[0.98]"
-              />
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader 
-              action={
-                <Link href="/dashboard/activity" className="text-sm text-bofa-blue font-bold hover:underline">
-                  View full history
-                </Link>
-              }
-            >
-              <h3 className="font-bold text-bofa-navy">Recent Activity</h3>
-            </CardHeader>
-            <CardBody className="p-0">
-              <Table
-                keyExtractor={(t) => t.id}
-                data={data?.recentTransactions || []}
-                emptyMessage="No recent account activity."
-                columns={[
-                  {
-                    header: 'Description',
-                    key: 'description',
-                    render: (t) => (
-                      <div>
-                        <p className="font-bold text-bofa-navy text-sm leading-tight">{t.description}</p>
-                        <p className="text-[10px] text-bofa-gray-400 font-bold uppercase tracking-widest mt-0.5">
-                          {t.account.account_type.toUpperCase()} • {t.account.account_number.slice(-4)}
-                        </p>
-                      </div>
-                    )
-                  },
-                  {
-                    header: 'Date',
-                    key: 'date',
-                    render: (t) => (
-                      <span className="text-xs font-medium text-bofa-gray-500">
-                        {new Date(t.date).toLocaleDateString()}
-                      </span>
-                    )
-                  },
-                  {
-                    header: 'Amount',
-                    key: 'amount',
-                    align: 'right',
-                    render: (t) => (
-                      <span className={`font-mono font-bold text-base ${t.type === 'credit' ? 'text-green-600' : 'text-bofa-red'}`}>
-                        {t.type === 'credit' ? '+' : '-'}{formatCurrency(t.amount)}
-                      </span>
-                    )
-                  }
-                ]}
-              />
-            </CardBody>
-          </Card>
+      {/* Accounts Section */}
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-[14px] font-normal text-[#333]">Bank accounts</div>
+          <span className="text-[13px] text-[#666]">
+            Total: <span className="font-medium text-[#333]">{formatCurrency(data?.summary.totalBalance || 0)}</span>
+          </span>
         </div>
 
-        {/* Quick Tools */}
-        <div className="space-y-6">
-          <Card padding="lg">
-            <CardHeader>
-              <h3 className="font-bold text-bofa-navy">Insights & Offers</h3>
-            </CardHeader>
-            <CardBody className="space-y-6 pt-2">
-              <div className="p-4 bg-orange-50 border border-orange-100 rounded-2xl">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center shadow-md">
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        <div className="bg-white border border-[#ddd] rounded overflow-hidden">
+          {data?.accounts.map((account, index) => (
+            <div key={account.id}>
+              {index > 0 && <hr className="border-[#eee]" />}
+              <Link
+                href={`/dashboard/account/${account.id}`}
+                className="flex items-center justify-between px-4 py-4 hover:bg-[#fafafa] transition-colors"
+              >
+                <div className="flex items-center gap-4">
+                  {/* Account Icon */}
+                  <div className={`w-10 h-10 rounded flex items-center justify-center ${
+                    account.account_type === 'checking' ? 'bg-[#012169]' : 'bg-[#0066b2]'
+                  }`}>
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      {account.account_type === 'checking' ? (
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                      ) : (
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                      )}
                     </svg>
                   </div>
                   <div>
-                    <h4 className="text-xs font-black text-orange-800 uppercase tracking-widest">Rewards Update</h4>
-                    <p className="font-mono text-xl font-black text-orange-600">
-                      {data?.cards.reduce((sum, c) => sum + c.rewards_points, 0).toLocaleString() || 0}
-                    </p>
+                    <div className="text-[14px] text-[#333] font-medium capitalize">
+                      {account.account_type} {formatAccountNumber(account.account_number)}
+                    </div>
+                    <div className="text-[12px] text-[#666]">
+                      Available balance
+                    </div>
                   </div>
                 </div>
-                <p className="text-[10px] text-orange-700 font-bold leading-relaxed">
-                  You&apos;ve earned significant points this month. Redeem for travel, cash back or gift cards.
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <Link href="#" className="flex items-center justify-between p-3 rounded-xl hover:bg-bofa-gray-50 transition-colors border border-transparent hover:border-bofa-gray-100 group">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-bofa-navy text-white rounded-lg">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                      </svg>
-                    </div>
-                    <span className="text-sm font-bold text-bofa-navy">Security Center</span>
+                <div className="text-right">
+                  <div className="text-[18px] font-medium text-[#333] font-mono">
+                    {formatCurrency(account.balance)}
                   </div>
-                  <svg className="w-4 h-4 text-bofa-gray-300 group-hover:text-bofa-blue transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+                  <svg className="w-4 h-4 text-[#999] ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
-                </Link>
-
-                <Link href="#" className="flex items-center justify-between p-3 rounded-xl hover:bg-bofa-gray-50 transition-colors border border-transparent hover:border-bofa-gray-100 group">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-bofa-navy text-white rounded-lg">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <span className="text-sm font-bold text-bofa-navy">Paperless Settings</span>
-                  </div>
-                  <svg className="w-4 h-4 text-bofa-gray-300 group-hover:text-bofa-blue transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </div>
-            </CardBody>
-          </Card>
+                </div>
+              </Link>
+            </div>
+          ))}
         </div>
-      </div>
+      </section>
+
+      {/* Credit Cards Section */}
+      {data?.cards && data.cards.length > 0 && (
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-[14px] font-normal text-[#333]">Credit cards</div>
+          </div>
+
+          <div className="bg-white border border-[#ddd] rounded overflow-hidden">
+            {data.cards.map((card, index) => (
+              <div key={card.id}>
+                {index > 0 && <hr className="border-[#eee]" />}
+                <Link
+                  href={`/dashboard/card/${card.id}`}
+                  className="flex items-center justify-between px-4 py-4 hover:bg-[#fafafa] transition-colors"
+                >
+                  <div className="flex items-center gap-4">
+                    {/* Card Icon */}
+                    <div className="w-10 h-10 rounded bg-[#c41230] flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-[14px] text-[#333] font-medium">
+                        Cash Rewards {formatAccountNumber(card.card_number)}
+                      </div>
+                      <div className="text-[12px] text-[#666]">
+                        Credit limit: {formatCurrency(card.credit_limit)}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[18px] font-medium text-[#333] font-mono">
+                      {formatCurrency(card.current_balance)}
+                    </div>
+                    <div className="text-[12px] text-[#0066b2]">
+                      {card.rewards_points.toLocaleString()} rewards pts
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Recent Activity Section */}
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-[14px] font-normal text-[#333]">Recent activity</div>
+          <Link href="/dashboard/activity" className="text-[13px] text-[#0066b2] hover:underline">
+            View all activity
+          </Link>
+        </div>
+
+        <div className="bg-white border border-[#ddd] rounded overflow-hidden">
+          {data?.recentTransactions && data.recentTransactions.length > 0 ? (
+            data.recentTransactions.slice(0, 5).map((transaction, index) => (
+              <div key={transaction.id}>
+                {index > 0 && <hr className="border-[#eee]" />}
+                <div className="flex items-center justify-between px-4 py-3">
+                  <div>
+                    <div className="text-[14px] text-[#333]">{transaction.description}</div>
+                    <div className="text-[12px] text-[#666]">
+                      {new Date(transaction.date).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                      })} • {transaction.account.account_type} {transaction.account.account_number.slice(-4)}
+                    </div>
+                  </div>
+                  <div className={`text-[16px] font-mono font-medium ${
+                    transaction.type === 'credit' ? 'text-green-600' : 'text-[#333]'
+                  }`}>
+                    {transaction.type === 'credit' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="px-4 py-8 text-center text-[14px] text-[#666]">
+              No recent transactions
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Insights Panel */}
+      <section className="bg-white border border-[#ddd] rounded p-4">
+        <div className="text-[14px] font-normal text-[#333] mb-4">Insights & offers</div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Security Tip */}
+          <div className="p-4 bg-[#f5f5f5] rounded">
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-5 h-5 text-[#012169]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <span className="text-[13px] font-medium text-[#012169]">Security Center</span>
+            </div>
+            <p className="text-[12px] text-[#666]">Review your security settings and enable extra protection.</p>
+          </div>
+
+          {/* Rewards */}
+          <div className="p-4 bg-[#fff8f0] rounded border border-[#ffe0c0]">
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+              </svg>
+              <span className="text-[13px] font-medium text-orange-700">Rewards</span>
+            </div>
+            <p className="text-[20px] font-bold text-orange-600 font-mono">
+              {data?.cards?.reduce((sum, c) => sum + c.rewards_points, 0).toLocaleString() || 0}
+            </p>
+            <p className="text-[12px] text-[#666]">Total reward points available</p>
+          </div>
+
+          {/* Paperless */}
+          <div className="p-4 bg-[#f0f8ff] rounded border border-[#c0e0ff]">
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-5 h-5 text-[#0066b2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <span className="text-[13px] font-medium text-[#0066b2]">Go Paperless</span>
+            </div>
+            <p className="text-[12px] text-[#666]">Switch to paperless statements and help the environment.</p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

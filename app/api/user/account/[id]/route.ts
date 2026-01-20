@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSupabase } from '@/lib/supabase/server';
+import { getAdminSupabase } from '@/lib/supabase/server';
 import { auth } from '@/lib/auth';
 
 export async function GET(
@@ -13,10 +13,10 @@ export async function GET(
     }
 
     const { id } = await params;
-    const supabase = getServerSupabase();
+    const supabaseAdmin = getAdminSupabase();
 
-    // Fetch account details
-    const { data: account, error: accError } = await supabase
+    // Fetch account details - must belong to this user
+    const { data: account, error: accError } = await supabaseAdmin
       .from('accounts')
       .select('*')
       .eq('id', id)
@@ -24,23 +24,27 @@ export async function GET(
       .single();
 
     if (accError || !account) {
+      console.error('Account fetch error:', accError);
       return NextResponse.json({ error: 'Account not found' }, { status: 404 });
     }
 
     // Fetch transactions for this account
-    const { data: transactions, error: txsError } = await supabase
+    const { data: transactions, error: txsError } = await supabaseAdmin
       .from('transactions')
       .select('*')
       .eq('account_id', id)
-      .order('date', { ascending: false });
+      .order('date', { ascending: false })
+      .limit(50);
 
-    if (txsError) throw txsError;
+    if (txsError) {
+      console.error('Transactions fetch error:', txsError);
+    }
 
     return NextResponse.json({
       success: true,
       data: {
         account,
-        transactions
+        transactions: transactions || []
       }
     });
   } catch (error) {

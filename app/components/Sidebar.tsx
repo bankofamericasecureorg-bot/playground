@@ -158,15 +158,12 @@ export default function Sidebar({ variant, isCollapsed = false, onToggle }: Side
       {/* Sidebar Header */}
       <div className="p-4 border-b border-bofa-gray-200 flex items-center justify-between">
         {!isCollapsed && (
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-sm overflow-hidden flex flex-col">
-              <div className="h-1/3 bg-bofa-red"></div>
-              <div className="h-1/3 bg-white border-y border-bofa-gray-200"></div>
-              <div className="h-1/3 bg-bofa-navy"></div>
-            </div>
-            <span className="font-semibold text-bofa-navy text-sm">
-              {variant === 'admin' ? 'Admin Panel' : 'Online Banking'}
-            </span>
+          <div className="flex items-center">
+            <img 
+              src="/header.png" 
+              alt="Bank of America" 
+              className="h-6 w-auto"
+            />
           </div>
         )}
         {onToggle && (

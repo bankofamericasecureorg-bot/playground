@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSupabase } from '@/lib/supabase/server';
+import { getAdminSupabase } from '@/lib/supabase/server';
 import { auth } from '@/lib/auth';
 
 export async function GET() {
@@ -9,16 +9,17 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const supabase = getServerSupabase();
-    const { data: notifications, error } = await supabase
+    const supabaseAdmin = getAdminSupabase();
+    const { data: notifications, error } = await supabaseAdmin
       .from('notifications')
       .select('*')
       .eq('user_id', session.id)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(50);
 
     if (error) throw error;
 
-    return NextResponse.json({ success: true, data: notifications });
+    return NextResponse.json({ success: true, data: notifications || [] });
   } catch (error) {
     console.error('Fetch notifications error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -33,9 +34,9 @@ export async function PATCH(request: Request) {
     }
 
     const { id, is_read } = await request.json();
-    const supabase = getServerSupabase();
+    const supabaseAdmin = getAdminSupabase();
 
-    const { data: notification, error } = await supabase
+    const { data: notification, error } = await supabaseAdmin
       .from('notifications')
       .update({ is_read })
       .eq('id', id)

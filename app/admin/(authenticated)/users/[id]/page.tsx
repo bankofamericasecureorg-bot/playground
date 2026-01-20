@@ -97,17 +97,17 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
           </svg>
           Back to User List
         </button>
-        <h2 className="text-3xl font-bold text-bofa-navy">Edit Customer Profile</h2>
-        <p className="text-bofa-gray-500 font-medium">Update personal information for this client.</p>
+        <div className="text-sm font-normal text-[#333]">Edit Customer Profile</div>
+        <p className="text-sm font-normal text-[#333]">Update personal information for this client.</p>
       </div>
 
       <form onSubmit={handleSubmit}>
         <Card variant="default">
           <CardHeader>
-            <h3 className="font-bold text-bofa-navy uppercase tracking-wider text-sm flex items-center gap-2">
+            <div className="text-sm font-normal text-[#333] flex items-center gap-2">
               <div className="w-2 h-2 bg-bofa-navy rounded-full"></div>
               Personal Details
-            </h3>
+            </div>
           </CardHeader>
           <CardBody className="space-y-6 pt-8 pb-10">
             {error && (

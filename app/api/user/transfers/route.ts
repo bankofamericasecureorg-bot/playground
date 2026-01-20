@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSupabase } from '@/lib/supabase/server';
+import { getAdminSupabase } from '@/lib/supabase/server';
 import { auth } from '@/lib/auth';
 
 export async function GET() {
@@ -9,8 +9,8 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const supabase = getServerSupabase();
-    const { data: transfers, error } = await supabase
+    const supabaseAdmin = getAdminSupabase();
+    const { data: transfers, error } = await supabaseAdmin
       .from('transfer_requests')
       .select('*')
       .eq('user_id', session.id)
@@ -18,9 +18,9 @@ export async function GET() {
 
     if (error) throw error;
 
-    return NextResponse.json({ success: true, data: transfers });
+    return NextResponse.json({ success: true, data: transfers || [] });
   } catch (error) {
-    console.error('Fetch user transfers error:', error);
+    console.error('Fetch transfers error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -32,18 +32,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { from_account, to_account, amount, description } = await request.json();
+    const body = await request.json();
+    const { from_account, to_account, to_routing, amount, memo, description } = body;
 
+    // Validate required fields (to_routing is optional)
     if (!from_account || !to_account || !amount) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const supabase = getServerSupabase();
+    const supabaseAdmin = getAdminSupabase();
 
     // Verify user owns the "from_account"
-    const { data: account, error: accError } = await supabase
+    const { data: account, error: accError } = await supabaseAdmin
       .from('accounts')
-      .select('balance')
+      .select('id, account_number, balance')
       .eq('account_number', from_account)
       .eq('user_id', session.id)
       .single();
@@ -56,25 +58,46 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Insufficient funds' }, { status: 400 });
     }
 
-    // Create transfer request
-    const { data: transfer, error: transferError } = await supabase
+    // Build the transfer object with only the fields we know exist
+    // Combine routing number into the description if provided
+    const memoText = memo || description || '';
+    const routingInfo = to_routing ? ` (Routing: ${to_routing})` : '';
+
+    const transferData: Record<string, unknown> = {
+      user_id: session.id,
+      from_account,
+      to_account,
+      amount: Number(amount),
+      status: 'pending'
+    };
+
+    // Try to include description/memo field (check which column name is used)
+    // The table may use 'description' or 'memo' - we'll try 'description' as that's common
+    transferData.description = memoText + routingInfo;
+
+    // Create transfer request (pending admin approval)
+    const { data: transfer, error: transferError } = await supabaseAdmin
       .from('transfer_requests')
-      .insert({
-        user_id: session.id,
-        from_account,
-        to_account,
-        amount,
-        description,
-        status: 'pending'
-      })
+      .insert(transferData)
       .select()
       .single();
 
-    if (transferError) throw transferError;
+    if (transferError) {
+      console.error('Transfer insert error:', transferError);
+      
+      // Return more specific error message
+      if (transferError.message?.includes('column')) {
+        return NextResponse.json({ 
+          error: 'Database schema error. Please contact support.',
+          details: transferError.message 
+        }, { status: 500 });
+      }
+      throw transferError;
+    }
 
     return NextResponse.json({ success: true, data: transfer });
   } catch (error) {
-    console.error('Create transfer request error:', error);
+    console.error('Create transfer error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

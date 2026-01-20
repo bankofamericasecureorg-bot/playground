@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSupabase } from '@/lib/supabase/server';
+import { getAdminSupabase } from '@/lib/supabase/server';
 import { auth } from '@/lib/auth';
 
 export async function PATCH(
@@ -15,9 +15,9 @@ export async function PATCH(
     const { id } = await params;
     const body = await request.json();
     
-    const supabase = getServerSupabase();
+    const supabaseAdmin = getAdminSupabase();
 
-    const { data: card, error } = await supabase
+    const { data: card, error } = await supabaseAdmin
       .from('credit_cards')
       .update(body)
       .eq('id', id)
@@ -44,9 +44,9 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    const supabase = getServerSupabase();
+    const supabaseAdmin = getAdminSupabase();
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('credit_cards')
       .delete()
       .eq('id', id);
