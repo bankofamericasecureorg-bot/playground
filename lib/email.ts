@@ -141,5 +141,31 @@ export const emailService = {
         <p>You can view the details of this transaction in your online banking dashboard.</p>
       `
     });
+  },
+
+  /**
+   * Send Login OTP Verification Code
+   */
+  async sendLoginOTPEmail(to: string, code: string, name: string) {
+    return this.sendEmail({
+      to,
+      subject: 'Your Bank of America Verification Code',
+      html: `
+        <h2 style="color: #012169; margin-top: 0;">Sign In Verification</h2>
+        <p>Dear ${name},</p>
+        <p>We received a request to sign in to your Bank of America Online Banking account. Use the verification code below to complete your sign in:</p>
+        <div style="background-color: #012169; padding: 25px; border-radius: 8px; text-align: center; margin: 25px 0;">
+          <p style="color: #FFFFFF; font-size: 12px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 2px;">Verification Code</p>
+          <p style="color: #FFFFFF; font-size: 36px; font-weight: bold; letter-spacing: 8px; margin: 0; font-family: 'Courier New', monospace;">${code}</p>
+        </div>
+        <p style="color: #666666; font-size: 13px;">This code will expire in <strong>10 minutes</strong>.</p>
+        <div style="background-color: #FEF3C7; border: 1px solid #F59E0B; padding: 15px; border-radius: 6px; margin: 20px 0;">
+          <p style="color: #92400E; font-size: 12px; margin: 0;">
+            <strong>⚠️ Security Notice:</strong> If you did not attempt to sign in, please contact us immediately at 1-800-432-1000.
+          </p>
+        </div>
+        <p style="font-size: 12px; color: #999999;">Do not share this code with anyone. Bank of America employees will never ask for your verification code.</p>
+      `
+    });
   }
 };

@@ -28,7 +28,14 @@ export default function UserLoginPage() {
       const result = await response.json();
 
       if (result.success) {
-        router.push('/dashboard');
+        // Check if OTP verification is required
+        if (result.pending_verification) {
+          // Redirect to verification page with session info
+          router.push(`/user/verify?session=${result.session_id}&email=${encodeURIComponent(result.email_hint)}`);
+        } else {
+          // Direct login success (fallback for legacy flow)
+          router.push('/dashboard');
+        }
       } else {
         setError('The information you entered does not match our records. Please try again.');
       }
