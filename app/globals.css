@@ -111,12 +111,14 @@
   --color-bofa-gray-600: var(--bofa-gray-600);
   --color-bofa-gray-700: var(--bofa-gray-700);
   --color-bofa-gray-800: var(--bofa-gray-800);
-  --color-bofa-gray-900: var(--bofa-gray-900);
-  
   /* Fonts */
   --font-sans: var(--font-roboto), system-ui, -apple-system, sans-serif;
   --font-condensed: var(--font-libre-franklin), "Franklin Gothic Medium", "Arial Narrow", sans-serif;
   --font-mono: var(--font-roboto-mono), ui-monospace, monospace;
+  
+  /* Breakpoints */
+  --breakpoint-xs: 475px;
+  --breakpoint-xxs: 375px;
 }
 
 /* ===== BASE STYLES ===== */

