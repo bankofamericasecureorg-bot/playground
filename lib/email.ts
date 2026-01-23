@@ -1,6 +1,19 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy initialization to avoid build-time errors on Vercel
+// The Resend client is only created when actually needed at runtime
+let resendClient: Resend | null = null;
+
+function getResendClient(): Resend | null {
+  if (!process.env.RESEND_API_KEY) {
+    return null;
+  }
+  if (!resendClient) {
+    resendClient = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resendClient;
+}
+
 const fromEmail = process.env.EMAIL_FROM || 'onboarding@resend.dev';
 
 /**
@@ -23,7 +36,8 @@ export const emailService = {
     html: string 
   }) {
     try {
-      if (!process.env.RESEND_API_KEY) {
+      const resend = getResendClient();
+      if (!resend) {
         console.warn('RESEND_API_KEY is missing. Email not sent.');
         return { success: false, error: 'API Key missing' };
       }
