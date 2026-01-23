@@ -8,6 +8,12 @@ export async function updateSession(request: NextRequest) {
     },
   })
 
+  // Safety check: if Supabase env vars are missing, just pass through
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    console.warn('Supabase environment variables are not configured. Skipping session update.');
+    return response;
+  }
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
