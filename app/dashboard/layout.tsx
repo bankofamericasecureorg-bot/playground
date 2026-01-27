@@ -3,6 +3,12 @@ import { auth } from '@/lib/auth';
 import DashboardHeader from '@/app/components/DashboardHeader';
 import EricaChat from '@/app/components/EricaChat';
 import Footer from '@/app/components/Footer';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Bank of America - Online Banking Home | Dashboard",
+  description: "Manage your accounts, pay bills, and transfer funds securely.",
+};
 
 export default async function UserDashboardLayout({
   children,

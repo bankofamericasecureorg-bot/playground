@@ -26,13 +26,13 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bank of America - Online Banking",
-  description: "Access your Bank of America accounts securely. View balances, transfer funds, pay bills, and manage your finances online.",
-  keywords: ["Bank of America", "online banking", "banking", "finance", "accounts"],
-  authors: [{ name: "Bank of America" }],
+  title: "Radius Wealth Partners | Strategic Asset Management",
+  description: "Premier wealth management and strategic advisory services for high-net-worth individuals and families. Preserving legacy for future generations.",
+  keywords: ["wealth management", "asset management", "financial advisory", "investment strategy", "private wealth"],
+  authors: [{ name: "Radius Wealth Partners" }],
   openGraph: {
-    title: "Bank of America - Online Banking",
-    description: "Secure online banking with Bank of America",
+    title: "Radius Wealth Partners | Strategic Asset Management",
+    description: "Premier wealth management and strategic advisory services.",
     type: "website",
   },
 };
