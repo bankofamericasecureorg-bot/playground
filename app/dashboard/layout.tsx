@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: "Manage your accounts, pay bills, and transfer funds securely.",
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function UserDashboardLayout({
   children,
 }: {
