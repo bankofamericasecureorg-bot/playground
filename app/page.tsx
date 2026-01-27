@@ -46,15 +46,15 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-800" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-serif tracking-tight text-white sm:text-6xl mb-6">
+          <h1 className="text-4xl font-serif tracking-tight !text-white sm:text-6xl mb-6">
             Preserving Wealth.<br />
             Securing Legacies.
           </h1>
-          <p className="mt-6 text-lg leading-8 text-slate-300 max-w-2xl mx-auto">
+          <p className="mt-6 text-lg leading-8 !text-slate-300 max-w-2xl mx-auto">
             Radius Wealth Partners provides bespoke investment strategies and strategic advisory services for ultra-high-net-worth individuals, families, and foundations.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
-            <a href="#" className="text-sm font-semibold leading-6 text-white border-b border-slate-500 pb-1 hover:border-white transition-colors">
+            <a href="#" className="text-sm font-semibold leading-6 !text-white border-b border-slate-500 pb-1 hover:border-white transition-colors">
               Explore Our Philosophy <span aria-hidden="true">→</span>
             </a>
           </div>
