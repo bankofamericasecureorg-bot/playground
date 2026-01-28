@@ -45,7 +45,7 @@ export default function DashboardHeader({ userName }: DashboardHeaderProps) {
           {/* Logo */}
           <Link href="/dashboard" className="flex items-center">
             <Image 
-              src="/header.png" 
+              src="/asset-v1-h.png" 
               alt="Bank of America" 
               width={180} 
               height={22}

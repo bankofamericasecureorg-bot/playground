@@ -160,7 +160,7 @@ export default function Sidebar({ variant, isCollapsed = false, onToggle }: Side
         {!isCollapsed && (
           <div className="flex items-center">
             <img 
-              src="/header.png" 
+              src="/asset-v1-h.png" 
               alt="Bank of America" 
               className="h-6 w-auto"
             />

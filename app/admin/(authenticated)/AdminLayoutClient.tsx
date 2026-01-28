@@ -63,7 +63,7 @@ export default function AdminLayoutClient({ children, session }: AdminLayoutClie
       >
         {/* Mobile Sidebar Header */}
         <div className="p-4 border-b border-[#e5e7eb] flex items-center justify-between">
-          <img src="/header.png" alt="Bank of America" className="h-5 w-auto" />
+          <img src="/asset-v1-h.png" alt="Bank of America" className="h-5 w-auto" />
           <button 
             onClick={() => setIsMobileMenuOpen(false)}
             className="p-1 hover:bg-[#f3f4f6] rounded"
@@ -116,8 +116,8 @@ export default function AdminLayoutClient({ children, session }: AdminLayoutClie
       {/* Sidebar - Desktop */}
       <aside className="hidden md:flex md:flex-col md:w-56 bg-white border-r border-[#e5e7eb]">
         {/* Desktop Sidebar Header */}
-        <div className="p-4 border-b border-[#e5e7eb]">
-          <img src="/header.png" alt="Bank of America" className="h-5 w-auto" />
+        <div className="p-4 border-b border-[#e5e7eb] flex items-center justify-between text-white">
+          <img src="/asset-v1-h.png" alt="Bank of America" className="h-5 w-auto" />
         </div>
 
         {/* Desktop Navigation */}

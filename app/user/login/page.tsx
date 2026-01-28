@@ -77,7 +77,7 @@ function UserLoginContent() {
           {/* Logo - Using real image */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <Image 
-              src="/header.png" 
+              src="/asset-v1-h.png" 
               alt="Bank of America" 
               width={200} 
               height={24}
@@ -213,7 +213,7 @@ function UserLoginContent() {
                 {/* Phone Mockup - Using real image */}
                 <div className="flex-shrink-0">
                   <Image 
-                    src="/phone.png" 
+                    src="/asset-v1-p.png" 
                     alt="Bank of America Mobile App" 
                     width={140} 
                     height={280}

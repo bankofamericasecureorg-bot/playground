@@ -128,7 +128,7 @@ function VerifyOTPContent() {
         <div className="max-w-[600px] mx-auto px-4 py-2.5 flex items-center justify-between gap-2 overflow-hidden">
           <div className="flex items-center gap-3 shrink-0">
             <Image 
-              src="/header.png" 
+              src="/asset-v1-h.png" 
               alt="Bank of America" 
               width={160} 
               height={20}
