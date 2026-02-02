@@ -231,11 +231,11 @@ export default function UserTransfersPage() {
                     />
                     <Input
                       label="Routing Number"
-                      placeholder="9 digit routing number"
+                      placeholder="11 digit routing number"
                       value={formData.to_routing}
                       onChange={(e) => setFormData({ ...formData, to_routing: e.target.value })}
                       required
-                      maxLength={9}
+                      maxLength={11}
                     />
                   </div>
 

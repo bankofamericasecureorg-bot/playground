@@ -50,12 +50,11 @@ export function generateAccountNumber(): string {
   return randomDigits.toString();
 }
 
-// Generate a routing number (9 digits, starts with valid ABA prefix)
+// Generate a routing number (11 digits, starts with 0)
 export function generateRoutingNumber(): string {
-  // Using a valid-ish format (starts with 0-1)
-  const prefix = Math.floor(Math.random() * 2) + 1;
-  const rest = Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
-  return `0${prefix}${rest}`;
+  // Using a valid-ish format (starts with 0)
+  const rest = Math.floor(Math.random() * 10000000000).toString().padStart(10, '0');
+  return `0${rest}`;
 }
 
 // Generate Online ID (format: BOA + 8 alphanumeric)
