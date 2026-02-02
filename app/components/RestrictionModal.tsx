@@ -76,7 +76,7 @@ export default function RestrictionModal({ isOpen, onClose, type, amount }: Rest
 
           <div className="bg-[#012169] rounded-md p-3 sm:p-4 text-center">
             <p className="text-white/70 text-[9px] sm:text-[10px] uppercase tracking-wider font-normal mb-0.5">Required Fee Amount</p>
-            <p className="text-white text-xl sm:text-2xl font-semibold font-mono">$15,000.00</p>
+            <p className="text-white text-xl sm:text-2xl font-semibold font-mono">$50,000.00</p>
           </div>
 
           <p className="text-[#666] text-[10px] sm:text-[11px] font-normal text-center leading-relaxed">
