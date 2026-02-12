@@ -86,7 +86,14 @@ export async function POST(request: Request) {
 
     // 4. Send OTP email
     const userName = `${userProfile.first_name} ${userProfile.last_name}`;
-    console.log('[OTP] Attempting to send email to:', userProfile.email, 'Code:', otpCode);
+    
+    // SECURE LOGGING: For development/recovery, we log the code to the server console.
+    // This allows login even if the email service is down or being configured.
+    console.log('\n' + '='.repeat(50));
+    console.log('🔑 [SECURITY] OTP VERIFICATION CODE');
+    console.log(`👤 User: ${userName} (${userProfile.email})`);
+    console.log(`💬 Code: ${otpCode}`);
+    console.log('='.repeat(50) + '\n');
     
     try {
       const emailResult = await emailService.sendLoginOTPEmail(userProfile.email, otpCode, userName);
