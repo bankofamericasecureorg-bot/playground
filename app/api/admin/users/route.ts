@@ -59,7 +59,10 @@ export async function POST(request: Request) {
 
     if (authError) {
       console.error('Auth creation error:', authError);
-      return NextResponse.json({ error: 'Failed to create user authentication' }, { status: 400 });
+      return NextResponse.json({ 
+        error: authError.message || 'Failed to create user authentication',
+        details: authError
+      }, { status: 400 });
     }
 
     if (!authUser.user) {
