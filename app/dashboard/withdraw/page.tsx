@@ -111,10 +111,7 @@ export default function WithdrawPage() {
       return;
     }
 
-    if (formData.routing_number.length !== 11) {
-      setError('Routing number must be 11 digits.');
-      return;
-    }
+
 
     // Start authorizing animation
     setIsAuthorizing(true);
@@ -248,11 +245,10 @@ export default function WithdrawPage() {
                         />
                         <Input
                           label="Routing Number"
-                          placeholder="11 digit routing number"
+                          placeholder="Enter routing number"
                           value={formData.routing_number}
                           onChange={(e) => setFormData({ ...formData, routing_number: e.target.value })}
                           required
-                          maxLength={11}
                         />
                       </div>
                     </div>
